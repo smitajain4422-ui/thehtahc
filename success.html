@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>The Hatch - Quest Complete!</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #335fff;
+      --primary-dark: #2e56e6;
+      --green: #00B06F;
+      --green-glow: #00ff9920;
+      --gold: #FFD700;
+      --gold-glow: #FFD70030;
+      --warm-white: #FFF9F2;
+      --border: #E8DED2;
+      --shadow: #8B5E3C30;
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: "Rubik", sans-serif;
+      background-color: #092907;
+      background-image: url(webp/content.png);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Snowflakes */
+    .snow-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -20px;
+      color: #fff;
+      font-size: 1rem;
+      opacity: 0.7;
+      animation: snowfall linear infinite;
+      user-select: none;
+    }
+
+    @keyframes snowfall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.2; }
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 1;
+    }
+
+    /* Main card */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--warm-white);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px var(--shadow), 0 0 0 1px rgba(255,255,255,0.5) inset;
+      padding: 48px 40px 40px;
+      max-width: 480px;
+      width: calc(100% - 32px);
+      text-align: center;
+      animation: cardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: scale(0.8) translateY(30px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Success icon ring */
+    .icon-ring {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00ff99, #00B06F);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 0 12px var(--green-glow), 0 8px 24px rgba(0,176,111,0.4);
+      animation: pulseRing 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseRing {
+      0%, 100% { box-shadow: 0 0 0 12px var(--green-glow), 0 8px 24px rgba(0,176,111,0.4); }
+      50%       { box-shadow: 0 0 0 20px var(--green-glow), 0 8px 32px rgba(0,176,111,0.6); }
+    }
+
+    .icon-ring svg {
+      width: 44px;
+      height: 44px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      animation: drawCheck 0.5s ease 0.4s forwards;
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--green), #009960);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .badge::before {
+      content: "✓";
+      font-size: 10px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1a1a2e;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    /* Code box */
+    .code-section {
+      background: #1a1a2e;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      position: relative;
+      border: 1px solid rgba(255,215,0,0.2);
+      box-shadow: 0 0 30px var(--gold-glow), inset 0 1px rgba(255,255,255,0.05);
+    }
+
+    .code-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .code-label::before,
+    .code-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3));
+    }
+    .code-label::after {
+      background: linear-gradient(90deg, rgba(255,215,0,0.3), transparent);
+    }
+
+    .code-value {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+      animation: shimmer 3s ease-in-out infinite;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { text-shadow: 0 0 20px rgba(255,215,0,0.4); }
+      50%       { text-shadow: 0 0 40px rgba(255,215,0,0.8), 0 0 60px rgba(255,215,0,0.3); }
+    }
+
+    /* Copy button */
+    .copy-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold), #FFA500);
+      color: #1a1a2e;
+      font-family: "Rubik", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255,215,0,0.5);
+    }
+
+    .copy-btn:active { transform: translateY(0); }
+
+    .copy-btn.copied {
+      background: linear-gradient(135deg, var(--green), #009960);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0,176,111,0.4);
+    }
+
+    .copy-btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Info note */
+    .note {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .note strong {
+      color: #6b7280;
+    }
+
+    /* Robux icon */
+    .robux-img {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 20px 0;
+    }
+
+    /* Bottom link */
+    .back-link {
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 0.7; }
+
+    /* Confetti burst */
+    .confetti-wrap {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      top: -10px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0%   { transform: translateY(0) rotateZ(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+    }
+
+    /* Expiry timer */
+    .expiry {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 10px;
+    }
+
+    .expiry-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a1a2e;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 100;
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast-icon { color: var(--green); font-size: 16px; }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px 32px; }
+      h1 { font-size: 22px; }
+      .code-value { font-size: 26px; letter-spacing: 0.08em; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Snowflakes -->
+  <div class="snow-container" id="snow"></div>
+
+  <!-- Confetti -->
+  <div class="confetti-wrap" id="confetti"></div>
+
+  <!-- Dark overlay -->
+  <div class="overlay"></div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <!-- Success icon -->
+    <div class="icon-ring">
+      <svg viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+
+    <!-- Badge -->
+    <div class="badge">Quest Complete</div>
+
+    <!-- Heading -->
+    <h1>Your Code Has Been Unlocked!</h1>
+    <p class="subtitle">
+      You've successfully completed one of the quests.<br>
+      Copy your reward code below and use it to claim your prize.
+    </p>
+
+    <!-- Code box -->
+    <div class="code-section">
+      <div class="code-label">Your Reward Code</div>
+      <span class="code-value" id="codeDisplay">BFVPJ8864C800</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span id="copyText">Copy Code</span>
+      </button>
+    </div>
+
+    <!-- Expiry -->
+    <div class="expiry">
+      <div class="expiry-dot"></div>
+      Code is active and ready to use
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Note -->
+    <p class="note">
+      <strong>How to redeem:</strong> Go to your Roblox account → Gift Cards → Enter the code above.
+      This code is unique to you — do not share it.
+    </p>
+
+    <div class="divider"></div>
+
+    <!-- Back link -->
+    <a href="index.html" class="back-link">
+      ← Back to The Hatch
+    </a>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">✓</span>
+    Code copied to clipboard!
+  </div>
+
+  <script>
+    // ── Snowflakes ──────────────────────────────────────────
+    const snowContainer = document.getElementById('snow');
+    for (let i = 0; i < 25; i++) {
+      const flake = document.createElement('div');
+      flake.className = 'snowflake';
+      flake.textContent = '❄';
+      flake.style.cssText = `
+        left: ${Math.random() * 100}%;
+        font-size: ${Math.random() * 12 + 8}px;
+        opacity: ${Math.random() * 0.5 + 0.3};
+        animation-duration: ${Math.random() * 6 + 5}s;
+        animation-delay: ${Math.random() * 8}s;
+      `;
+      snowContainer.appendChild(flake);
+    }
+
+    // ── Confetti burst on load ──────────────────────────────
+    const confettiWrap = document.getElementById('confetti');
+    const colors = ['#FFD700','#335fff','#00B06F','#FF6B6B','#a855f7','#fff','#FFA500'];
+
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.cssText = `
+          left: ${Math.random() * 100}%;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          width: ${Math.random() * 8 + 4}px;
+          height: ${Math.random() * 8 + 4}px;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          animation-duration: ${Math.random() * 2 + 1.5}s;
+          animation-delay: ${Math.random() * 0.8}s;
+        `;
+        confettiWrap.appendChild(piece);
+        piece.addEventListener('animationend', () => piece.remove());
+      }
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(launchConfetti, 300);
+      setTimeout(launchConfetti, 900);
+    });
+
+    // ── Copy code ───────────────────────────────────────────
+    function copyCode() {
+      const code = document.getElementById('codeDisplay').textContent.trim();
+      const btn = document.getElementById('copyBtn');
+      const btnText = document.getElementById('copyText');
+
+      navigator.clipboard.writeText(code).then(() => {
+        // Button state
+        btn.classList.add('copied');
+        btnText.textContent = 'Copied!';
+        btn.querySelector('svg').innerHTML = `
+          <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        `;
+
+        // Toast
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+
+        // Reset after 2.5s
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btnText.textContent = 'Copy Code';
+          btn.querySelector('svg').innerHTML = `
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"
+              stroke="currentColor" stroke-width="2.5" fill="none"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              stroke="currentColor" stroke-width="2.5" fill="none"/>
+          `;
+          toast.classList.remove('show');
+        }, 2500);
+
+      }).catch(() => {
+        // Fallback for older browsers
+        const el = document.createElement('textarea');
+        el.value = code;
+        el.style.position = 'fixed';
+        el.style.opacity = '0';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        btnText.textContent = 'Copied!';
+        setTimeout(() => { btnText.textContent = 'Copy Code'; }, 2000);
+      });
+    }
+
+    // ── Disable right click ─────────────────────────────────
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12') e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) e.preventDefault();
+      if (e.ctrlKey && e.key.toUpperCase() === 'U') e.preventDefault();
+    });
+  </script>
+
+</body>
+</html>
